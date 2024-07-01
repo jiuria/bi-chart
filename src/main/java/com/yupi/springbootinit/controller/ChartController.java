@@ -259,9 +259,13 @@ public class ChartController {
             throw new BusinessException(ErrorCode.PARAMS_ERROR,"文件格式不支持");
         }
 
-        //限流判断
+
+
 
         User loginUser = userService.getLoginUser(request);
+        //限流判断
+        redisLimiterManager.daRateLimit("genChartByAi_"+loginUser.getId());
+
 //        final String prompt ="你是一个数据分析师和前端开发专家，接下来我会按照以下固定格式给你提供内容：\n"+
 //                "分析需求：\n"+
 //                "{数据分析的需求或者目标}\n"+
