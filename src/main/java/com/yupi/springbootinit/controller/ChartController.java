@@ -15,6 +15,7 @@ import com.yupi.springbootinit.constant.UserConstant;
 import com.yupi.springbootinit.exception.BusinessException;
 import com.yupi.springbootinit.exception.ThrowUtils;
 import com.yupi.springbootinit.manager.AiManager;
+import com.yupi.springbootinit.manager.RedisLimiterManager;
 import com.yupi.springbootinit.model.dto.chart.*;
 import com.yupi.springbootinit.model.dto.file.UploadFileRequest;
 import com.yupi.springbootinit.model.entity.Chart;
@@ -58,6 +59,10 @@ public class ChartController {
 
     @Resource
     private AiManager aiManager;
+
+    @Resource
+    private RedisLimiterManager redisLimiterManager;
+
     private final static Gson GSON = new Gson();
 
     // region 增删改查
@@ -253,6 +258,9 @@ public class ChartController {
         if(!validFileSuffixList.contains(suffix)){
             throw new BusinessException(ErrorCode.PARAMS_ERROR,"文件格式不支持");
         }
+
+        //限流判断
+
         User loginUser = userService.getLoginUser(request);
 //        final String prompt ="你是一个数据分析师和前端开发专家，接下来我会按照以下固定格式给你提供内容：\n"+
 //                "分析需求：\n"+
